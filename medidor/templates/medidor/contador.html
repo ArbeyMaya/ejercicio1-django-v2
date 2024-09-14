@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contador de Litros</title>
+</head>
+<body>
+    <h1>Contador de Litros por Minuto</h1>
+    
+    <form method="GET">
+        <label for="minutos">Duración (en minutos): </label>
+        <input type="number" id="minutos" name="minutos" value="{{ duracion_minutos }}" min="1" max="10">
+        <button type="submit">Iniciar con flujo aleatorio</button>
+    </form>
+
+    <form method="GET">
+        <input type="hidden" name="minutos" value="{{ duracion_minutos }}">
+        <button type="submit" name="fijo">Generar 1 litro por segundo</button>
+    </form>
+    
+    <form method="GET">
+        <input type="hidden" name="minutos" value="{{ duracion_minutos }}">
+        <button type="submit" name="diez">Generar 10 litros por segundo</button>
+    </form>
+
+    <h2>Resultados:</h2>
+    <p>Total litros: {{ total_litros }} litros en {{ duracion_minutos }} minuto(s)</p>
+
+    <ul>
+    {% for minuto in minutos_data %}
+        <li>Minuto {{ minuto.minuto }}: {{ minuto.litros }} litros</li>
+        <ul>
+            {% for segundo in minuto.segundos %}
+                <li>Segundo {{ forloop.counter }}: {{ segundo }} litros</li>
+            {% endfor %}
+        </ul>
+    {% endfor %}
+    </ul>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promedio de Consumo de Agua</title>
+</head>
+<body>
+    <h1>Promedio de Consumo de Agua</h1>
+    {% if promedio_consumo %}
+        <p>El promedio de consumo de agua es: {{ promedio_consumo }} litros por segundo.</p>
+    {% else %}
+        <p>No hay datos suficientes para calcular el promedio de consumo.</p>
+    {% endif %}
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!-- templates/medidor/ver_datos.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Datos de Agua</title>
+</head>
+<body>
+    <h1>Datos de Agua</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Minuto</th>
+                <th>Segundo</th>
+                <th>Flujo (litros)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for dato in datos_agua %}
+            <tr>
+                <td>{{ dato.minuto }}</td>
+                <td>{{ dato.segundo }}</td>
+                <td>{{ dato.flujo_litros }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
