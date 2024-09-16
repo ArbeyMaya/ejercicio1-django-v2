@@ -2,6 +2,7 @@ import random
 from django.shortcuts import render
 from .models import FlujoAgua
 from django.db.models import Avg  # Importar la función para obtener el promedio
+from django.db.models import Sum #
 
 def ver_datos_agua(request):
     registros = FlujoAgua.objects.all().order_by('-timestamp')
@@ -51,16 +52,22 @@ def contador_view(request):
     
     return render(request, 'medidor/contador.html', context)
 
-# Nueva vista para mostrar el promedio de consumo
+
+# Nueva vista para mostrar el promedio y total de consumo
 def promedio_consumo_view(request):
-    promedio_consumo = FlujoAgua.objects.aggregate(Avg('flujo_litros'))['flujo_litros__avg']  # Calcular el promedio
-    
+    # Calcular el promedio de consumo
+    promedio_consumo = FlujoAgua.objects.aggregate(Avg('flujo_litros'))['flujo_litros__avg']
     if promedio_consumo is not None:
         promedio_consumo = round(promedio_consumo, 2)  # Redondear a dos decimales
     
-
+    # Calcular el total de litros consumidos
+    total_litros = FlujoAgua.objects.aggregate(Sum('flujo_litros'))['flujo_litros__sum']
+    if total_litros is not None:
+        total_litros = round(total_litros, 2)  # Redondear a dos decimales
+    
     context = {
         'promedio_consumo': promedio_consumo,
+        'total_litros': total_litros,
     }
     
     return render(request, 'medidor/promedio_consumo.html', context)
