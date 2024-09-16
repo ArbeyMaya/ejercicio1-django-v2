@@ -3,19 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <title>Promedio de Consumo de Agua</title>
 </head>
 <body>
     <h1>Promedio de Consumo de Agua</h1>
-    {% if promedio_consumo %}
-        <p>El promedio de consumo de agua es: {{ promedio_consumo }} litros por segundo.</p>
-    {% else %}
-        <p>No hay datos suficientes para calcular el promedio de consumo.</p>
-    {% endif %}
 
 
-    <p>Total de litros consumidos: {{ total_litros }} litros</p>
+
+
+
+
+<p>Promedio de consumo: {{ promedio_consumo }} litros por segundo</p>
+<p>Total de litros consumidos: {{ total_litros }} litros</p>
+
+{% if límite_consumo %}
+  <p>Límite de consumo establecido: {{ límite_consumo }} litros</p>
+{% else %}
+  <p>No has establecido un límite de consumo.</p>
+{% endif %}
+
+
+{% if límite_consumo and total_litros > límite_consumo %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>¡Alerta!</strong> Has superado tu límite de consumo de {{ límite_consumo }} litros.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+{% endif %}
     
-    
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </body>
 </html>

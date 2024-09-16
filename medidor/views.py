@@ -1,8 +1,11 @@
 import random
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import FlujoAgua
 from django.db.models import Avg  # Importar la función para obtener el promedio
 from django.db.models import Sum #
+from django import forms
+from django.contrib import messages
+from .forms import LímiteConsumoForm
 
 def ver_datos_agua(request):
     registros = FlujoAgua.objects.all().order_by('-timestamp')
@@ -53,21 +56,43 @@ def contador_view(request):
     return render(request, 'medidor/contador.html', context)
 
 
-# Nueva vista para mostrar el promedio y total de consumo
 def promedio_consumo_view(request):
     # Calcular el promedio de consumo
     promedio_consumo = FlujoAgua.objects.aggregate(Avg('flujo_litros'))['flujo_litros__avg']
     if promedio_consumo is not None:
-        promedio_consumo = round(promedio_consumo, 2)  # Redondear a dos decimales
+        promedio_consumo = round(promedio_consumo, 2)
     
     # Calcular el total de litros consumidos
     total_litros = FlujoAgua.objects.aggregate(Sum('flujo_litros'))['flujo_litros__sum']
     if total_litros is not None:
-        total_litros = round(total_litros, 2)  # Redondear a dos decimales
+        total_litros = round(total_litros, 2)
+    
+    # Obtener el límite de consumo de la sesión
+    límite_consumo = request.session.get('límite_consumo')
+    if límite_consumo is not None and total_litros is not None:
+        if total_litros > límite_consumo:
+            messages.warning(request, f"¡Alerta! Has superado tu límite de consumo de {límite_consumo} litros.")
     
     context = {
         'promedio_consumo': promedio_consumo,
         'total_litros': total_litros,
+        'límite_consumo': límite_consumo,
     }
     
     return render(request, 'medidor/promedio_consumo.html', context)
+
+# Vista para establecer el límite de consumo
+def establecer_límite_view(request):
+    if request.method == 'POST':
+        form = LímiteConsumoForm(request.POST)
+        if form.is_valid():
+            # Guardar el límite en la sesión
+            request.session['límite_consumo'] = form.cleaned_data['límite_litros']
+            return redirect('promedio_consumo_view')  # Redirigir a la vista del consumo
+
+    else:
+        # Cargar el formulario con el valor actual del límite en la sesión (si existe)
+        límite_actual = request.session.get('límite_consumo', 0)
+        form = LímiteConsumoForm(initial={'límite_litros': límite_actual})
+    
+    return render(request, 'medidor/limite.html', {'form': form})
